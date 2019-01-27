@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func acceptibleRequest(r *http.Request) bool {
+func acceptableRequest(r *http.Request) bool {
 	if r.Header.Get("X-Forwarded-For") != "" {
 		return false
 	}
@@ -50,7 +50,7 @@ func main() {
 	proxy := httputil.NewSingleHostReverseProxy(remote)
 
 	handleRequest := func(w http.ResponseWriter, r *http.Request) {
-		if acceptibleRequest(r) {
+		if acceptableRequest(r) {
 			log.Printf("Proxying request to %s from User-Agent: %s\n", r.URL, r.UserAgent())
 			proxy.ServeHTTP(w, r)
 		} else {
