@@ -12,6 +12,10 @@ import (
 )
 
 func acceptibleRequest(r *http.Request) bool {
+	if r.Header.Get("Metadata-Flavor") == "Amazon" {
+		return true
+	}
+
 	whitelistedUserAgentPrefixes := []string{
 		"aws-chalice/",
 		"aws-cli/",

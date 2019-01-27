@@ -4,7 +4,7 @@ The metadata server is used to provide temporary security credentials to the IAM
 
 Google Compute Engine, on the other hand, [requires a special header](https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying) to be present (`Metadata-Flavor: Google`). This might seems like a small thing, but it is extremely effective. [Here is a good comparison of how the different cloud metadata services behave.](https://ahmet.im/blog/comparison-of-instance-metadata-services/)
 
-I was first going to implement the same header protection in this program, but after reading [a Netflix blog post](https://medium.com/netflix-techblog/netflix-information-security-preventing-credential-compromise-in-aws-41b112c15179) on the subject, it appears that they are working with AWS to add protections based on the User-Agent header instead (the details on how and when this will be available for everyone is unclear). The benefit of just using the User-Agent is that all SDKs should continue to just work (if you use `curl` or other libraries, you will have to update your code). I decided to start with this simpler form of protection for simplicity, and more protections to be added in later versions.
+There is [a Netflix blog post](https://medium.com/netflix-techblog/netflix-information-security-preventing-credential-compromise-in-aws-41b112c15179) on the subject, and it appears that they are working with AWS to add protections based on the User-Agent header instead (the details on how and when this will be available for everyone is unclear). The benefit of checking the User-Agent is that all SDKs should continue to just work (if you use `curl` or other libraries, you will have to update your code). I decided to support this behavior since it greatly simplifies rollout of this program since most applications won't require any modification.
 
 The program acts as a reverse proxy, run by a special user (or root, if you prefer), and relies on an iptables rule to redirect all traffic destined for 169.254.169.254 through this proxy. The program blocks any request with a User-Agent that does not start with one of the following prefixes:
 
@@ -15,6 +15,8 @@ aws-sdk-
 Boto3/
 Botocore/
 ```
+
+In addition to whitelisting User-Agent prefixes, the program also allows requests that use the header `Metadata-Flavor: Amazon`. This is easy to add to programs such as curl.
 
 # Install
 
@@ -87,6 +89,15 @@ HTTP/1.1 400 Bad Request
 
 The request was blocked, great!
 
+Now try adding the `Metadata-Flavor: Amazon` header:
+
+```
+$ curl -i -H 'Metadata-Flavor: Amazon' http://169.254.169.254/latest/meta-data/iam/security-credentials/
+HTTP/1.1 200 OK
+```
+
+That worked!
+
 # Troubleshooting
 
 Print your iptables rules by running `sudo iptables-save`. Does it contain the nat rule to redirect traffic destined for 169.254.169.254?
@@ -94,3 +105,5 @@ Print your iptables rules by running `sudo iptables-save`. Does it contain the n
 If you see the error `http: proxy error: context canceled`, that means that the program is having problems forwarding the request to the real metadata server. Are you running on an EC2 machine?
 
 If you see hundreds of lines that eventually end with `http: proxy error: dial tcp 169.254.169.254:80: socket: too many open files`, that means that the program is also affected by the iptables rule. Are you running the program as the special user?
+
+Elastic Beanstalk issue requests to the metadata server using `curl`, so it will not work out of the box. This requires more research.
