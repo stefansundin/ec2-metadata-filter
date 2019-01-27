@@ -18,6 +18,8 @@ Botocore/
 
 In addition to whitelisting User-Agent prefixes, the program also allows requests that use the header `Metadata-Flavor: Amazon`. This is easy to add to programs such as curl.
 
+Like GCE, the program blocks requests containing a `X-Forwarded-For` header.
+
 # Install
 
 The reverse proxy runs on port 16925 by default (you can use the `PORT` environment variable to change this), and listens only on the loopback interface.

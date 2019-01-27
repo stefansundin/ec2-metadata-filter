@@ -12,6 +12,10 @@ import (
 )
 
 func acceptibleRequest(r *http.Request) bool {
+	if r.Header.Get("X-Forwarded-For") != "" {
+		return false
+	}
+
 	if r.Header.Get("Metadata-Flavor") == "Amazon" {
 		return true
 	}
