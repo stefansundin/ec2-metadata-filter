@@ -109,3 +109,5 @@ If you see the error `http: proxy error: context canceled`, that means that the 
 If you see hundreds of lines that eventually end with `http: proxy error: dial tcp 169.254.169.254:80: socket: too many open files`, that means that the program is also affected by the iptables rule. Are you running the program as the special user?
 
 Elastic Beanstalk issue requests to the metadata server using `curl`, so it will not work out of the box. This requires more research.
+
+To undo the iptables rule, run `sudo iptables -t nat -F`. This will flush all rules in the nat table.
