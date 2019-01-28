@@ -1,0 +1,15 @@
+[Unit]
+Description=EC2 metadata service protection
+
+[Service]
+User=ec2-metadata
+Group=nogroup
+ExecStart=/usr/bin/ec2-metadata-filter
+RestartSec=1
+Restart=on-failure
+
+# Optional. Default port is 16925.
+#Environment=PORT=1234
+
+[Install]
+WantedBy=multi-user.target
