@@ -1,6 +1,6 @@
-This is a small program that you can install on EC2 servers in order to enhance the security of the EC2 metadata server.
+This is a small program that you can install on EC2 instances in order to enhance the security of the EC2 metadata service.
 
-The metadata server is used to provide temporary security credentials to the IAM role associated with an EC2 instance. The server does not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
+The metadata service is used to provide temporary security credentials to the IAM role associated with an EC2 instance. The service does not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
 
 Google Compute Engine, on the other hand, [requires a special header](https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying) to be present (`Metadata-Flavor: Google`). This might seems like a small thing, but it is extremely effective. [Here is a good comparison of how the different cloud metadata services behave.](https://ahmet.im/blog/comparison-of-instance-metadata-services/)
 
@@ -104,10 +104,10 @@ That worked!
 
 Print your iptables rules by running `sudo iptables-save`. Does it contain the nat rule to redirect traffic destined for 169.254.169.254?
 
-If you see the error `http: proxy error: context canceled`, that means that the program is having problems forwarding the request to the real metadata server. Are you running on an EC2 machine?
+If you see the error `http: proxy error: context canceled`, that means that the program is having problems forwarding the request to the real metadata service. Are you running on an EC2 instance?
 
 If you see hundreds of lines that eventually end with `http: proxy error: dial tcp 169.254.169.254:80: socket: too many open files`, that means that the program is also affected by the iptables rule. Are you running the program as the special user?
 
-Elastic Beanstalk issue requests to the metadata server using `curl`, so it will not work out of the box. This requires more research.
+Elastic Beanstalk issue requests to the metadata service using `curl`, so it will not work out of the box. This requires more research.
 
 To undo the iptables rule, run `sudo iptables -t nat -F`. This will flush all rules in the nat table.

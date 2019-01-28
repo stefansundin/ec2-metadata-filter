@@ -11,6 +11,6 @@ Package: ec2-metadata-filter
 Architecture: any
 Built-Using: ${misc:Built-Using}
 Depends: ${shlibs:Depends}, ${misc:Depends}, iptables
-Description: Enhance the security of the EC2 metadata server.
- This is a small program that you can install on EC2 servers in order to
- enhance the security of the EC2 metadata server.
+Description: Enhance the security of the EC2 metadata service.
+ This is a small program that you can install on EC2 instances in order to
+ enhance the security of the EC2 metadata service.
