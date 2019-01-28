@@ -4,7 +4,7 @@ The metadata service is used to provide temporary security credentials to the IA
 
 Google Compute Engine, on the other hand, [requires a special header](https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying) to be present (`Metadata-Flavor: Google`). This might seems like a small thing, but it is extremely effective. [Here is a good comparison of how the different cloud metadata services behave.](https://ahmet.im/blog/comparison-of-instance-metadata-services/)
 
-There is [a Netflix blog post](https://medium.com/netflix-techblog/netflix-information-security-preventing-credential-compromise-in-aws-41b112c15179) on the subject, and it appears that they are working with AWS to add protections based on the User-Agent header instead (the details on how and when this will be available for everyone is unclear). The benefit of checking the User-Agent is that all SDKs should continue to just work (if you use `curl` or other libraries, you will have to update your code). I decided to support this behavior since it greatly simplifies rollout of this program since most applications won't require any modification.
+There is [a Netflix blog post](https://medium.com/netflix-techblog/netflix-information-security-preventing-credential-compromise-in-aws-41b112c15179) on the subject, and it appears that they are working with AWS to add protections based on the User-Agent header instead (the details of how and when this will be available for everyone is unclear). The benefit of checking the User-Agent header is that all SDKs should continue to just work (if you use `curl` or other libraries then you will have to update your code). I decided to support this behavior since it greatly simplifies rollout of this program since some applications will not require any modification at all.
 
 The program acts as a reverse proxy, run by a special user (or root, if you prefer), and relies on an iptables rule to redirect all traffic destined for 169.254.169.254 through this proxy. The program blocks any request with a User-Agent that does not start with one of the following prefixes:
 
@@ -24,14 +24,35 @@ Like GCE, the program blocks requests containing a `X-Forwarded-For` header.
 
 The reverse proxy runs on port 16925 by default (you can use the `PORT` environment variable to change this), and listens only on the loopback interface.
 
+[There is a PPA available:](https://launchpad.net/~stefansundin/+archive/ubuntu/ec2-metadata-filter)
+
+```
+sudo add-apt-repository ppa:stefansundin/ec2-metadata-filter
+sudo apt-get update
+sudo apt-get install ec2-metadata-filter
+```
+
+The debian package will install the program, create the user (explained below), and add a systemd service (that is started automatically). **But it will not set up the iptables rule for you.**
+
+Run `journalctl -u ec2-metadata-filter.service` to see logs from the service.
+
 ## iptables rule
 
 This creates a new user whose only purpose is to run the reverse proxy. Requests to 169.254.169.254 from any other user will be redirected to the proxy.
 
-You can use root instead, but that is a bad idea if security bugs are found in _this_ program, and it would also exempt root from this protection.
+First create the user:
 
 ```
 $ sudo adduser --system --no-create-home --home /nonexistent ec2-metadata
+```
+
+You could in theory use root, but that is a bad idea if security bugs are found in _this_ program, and it would also exempt root from this protection.
+
+You can safely ignore the warning that says: `Warning: The home dir /nonexistent you specified can't be accessed: No such file or directory`
+
+Then create the iptables rule:
+
+```
 $ sudo iptables -t nat -A OUTPUT -d 169.254.169.254 -p tcp -m owner \! --uid-owner ec2-metadata -j REDIRECT --to-port 16925
 ```
 
@@ -51,7 +72,8 @@ $ sudo su
 iptables-restore /etc/iptables.rules
 exit 0
 EOF
-chmod +x /etc/network/if-pre-up.d/iptables
+
+# chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
 The file `/etc/iptables.rules` should look something like the following:
@@ -76,7 +98,7 @@ Perform a request with the aws-cli (_without_ any local credentials present!):
 $ aws sts get-caller-identity
 ```
 
-In the other terminal, you should see the following:
+In the systemd logs, you should see the following:
 
 ```
 Proxying request to /latest/meta-data/iam/security-credentials/ from User-Agent: aws-cli/1.15.71 Python/3.5.2 Linux/4.15.0-43-generic botocore/1.10.70
