@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+#DEBHELPER#
+adduser --system --no-create-home --home /nonexistent ec2-metadata
+#DEBHELPER#
+exit 0

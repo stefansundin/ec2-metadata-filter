@@ -31,7 +31,7 @@ This creates a new user whose only purpose is to run the reverse proxy. Requests
 You can use root instead, but that is a bad idea if security bugs are found in _this_ program, and it would also exempt root from this protection.
 
 ```
-$ sudo useradd --system ec2-metadata
+$ sudo adduser --system --no-create-home --home /nonexistent ec2-metadata
 $ sudo iptables -t nat -A OUTPUT -d 169.254.169.254 -p tcp -m owner \! --uid-owner ec2-metadata -j REDIRECT --to-port 16925
 ```
 
