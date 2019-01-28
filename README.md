@@ -1,12 +1,12 @@
 This is a small program that you can install on EC2 instances in order to enhance the security of the EC2 metadata service.
 
-The metadata service is used to provide temporary security credentials to the IAM role associated with an EC2 instance. The service does not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
+The metadata service is used to provide temporary security credentials to the IAM role associated with an EC2 instance (among other things). The service does not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
 
 Google Compute Engine, on the other hand, [requires a special header](https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying) to be present (`Metadata-Flavor: Google`). This might seems like a small thing, but it is extremely effective. [Here is a good comparison of how the different cloud metadata services behave.](https://ahmet.im/blog/comparison-of-instance-metadata-services/)
 
 There is [a Netflix blog post](https://medium.com/netflix-techblog/netflix-information-security-preventing-credential-compromise-in-aws-41b112c15179) on the subject, and it appears that they are working with AWS to add protections based on the User-Agent header instead (the details of how and when this will be available for everyone is unclear). The benefit of checking the User-Agent header is that all SDKs should continue to just work (if you use `curl` or other libraries then you will have to update your code). I decided to support this behavior since it greatly simplifies rollout of this program since some applications will not require any modification at all.
 
-The program acts as a reverse proxy, run by a special user (or root, if you prefer), and relies on an iptables rule to redirect all traffic destined for 169.254.169.254 through this proxy. The program blocks any request with a User-Agent that does not start with one of the following prefixes:
+The program acts as a reverse proxy, and relies on an iptables rule to redirect all traffic destined for 169.254.169.254 through this proxy. The program blocks any request with a User-Agent that does not start with one of the following prefixes:
 
 ```
 aws-chalice/
@@ -16,7 +16,7 @@ Boto3/
 Botocore/
 ```
 
-In addition to whitelisting User-Agent prefixes, the program also allows requests that use the header `Metadata-Flavor: Amazon`. This is easy to add to programs such as curl.
+In addition to whitelisting User-Agent prefixes, the program also allows requests that send the header `Metadata-Flavor: Amazon`. This can be easily added to programs such as curl.
 
 Like GCE, the program blocks requests containing a `X-Forwarded-For` header.
 
