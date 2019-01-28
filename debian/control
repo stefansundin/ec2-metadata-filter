@@ -1,0 +1,16 @@
+Source: ec2-metadata-filter
+Maintainer: Stefan Sundin <stefan@stefansundin.com>
+Section: misc
+Priority: optional
+Standards-Version: 4.1.4
+Build-Depends: debhelper (>= 11~), dh-golang, golang
+Homepage: https://github.com/stefansundin/ec2-metadata-filter
+XS-Go-Import-Path: github.com/stefansundin/ec2-metadata-filter
+
+Package: ec2-metadata-filter
+Architecture: any
+Built-Using: ${misc:Built-Using}
+Depends: ${shlibs:Depends}, ${misc:Depends}, iptables
+Description: Enhance the security of the EC2 metadata server.
+ This is a small program that you can install on EC2 servers in order to
+ enhance the security of the EC2 metadata server.

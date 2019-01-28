@@ -1,0 +1,5 @@
+ec2-metadata-filter (1.0.0-1) bionic; urgency=medium
+
+  * Initial release.
+
+ -- Stefan Sundin <stefan@stefansundin.com>  Sun, 27 Jan 2019 16:02:44 -0800

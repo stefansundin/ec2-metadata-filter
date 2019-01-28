@@ -1,0 +1,5 @@
+/ec2-metadata-filter
+/files
+/.debhelper
+debhelper-build-stamp
+*.substvars
