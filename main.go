@@ -26,6 +26,7 @@ func acceptableRequest(r *http.Request) bool {
 		"aws-sdk-",
 		"Boto3/",
 		"Botocore/",
+		"Cloud-Init/",
 	}
 
 	ua := r.UserAgent()

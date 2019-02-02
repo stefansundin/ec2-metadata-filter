@@ -14,6 +14,7 @@ aws-cli/
 aws-sdk-
 Boto3/
 Botocore/
+Cloud-Init/
 ```
 
 In addition to whitelisting User-Agent prefixes, the program also allows requests that send the header `Metadata-Flavor: Amazon`. This can be easily added to programs such as curl.
