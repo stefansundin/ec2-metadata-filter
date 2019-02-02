@@ -12,4 +12,4 @@ Restart=on-failure
 #Environment=PORT=1234
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=network-online.target
