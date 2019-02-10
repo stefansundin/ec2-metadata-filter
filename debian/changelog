@@ -1,3 +1,10 @@
+ec2-metadata-filter (1.0.2-1) bionic; urgency=medium
+
+  * Prevent double timestamp in systemd logs.
+  * More tweaks to the systemd service.
+
+ -- Stefan Sundin <stefan@stefansundin.com>  Sun, 10 Feb 2019 15:32:54 -0800
+
 ec2-metadata-filter (1.0.1-1) bionic; urgency=medium
 
   * Added Cloud-Init/ to the user-agent whitelist.
