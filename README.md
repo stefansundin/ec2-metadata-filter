@@ -70,12 +70,10 @@ $ sudo apt-get install iptables-persistent
 ```
 
 When it asks you if you want to save your IPv4 rules, select _Yes_.
-Alternatively, run:
-
-sudo dpkg-reconfigure iptables-persistent
+You can also run:
 
 ```
-$ sudo iptables-save | sudo tee -a /etc/iptables/rules.v4
+$ sudo netfilter-persistent save
 ```
 
 The file `/etc/iptables/rules.v4` should look something like the following:

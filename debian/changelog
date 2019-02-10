@@ -1,3 +1,10 @@
+ec2-metadata-filter (1.0.1-1) bionic; urgency=medium
+
+  * Added Cloud-Init/ to the user-agent whitelist.
+  * Start the systemd service earlier.
+
+ -- Stefan Sundin <stefan@stefansundin.com>  Sat, 09 Feb 2019 17:05:17 -0800
+
 ec2-metadata-filter (1.0.0-1) bionic; urgency=medium
 
   * Initial release.
