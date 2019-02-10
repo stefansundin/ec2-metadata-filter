@@ -8,6 +8,8 @@ ExecStart=/usr/bin/ec2-metadata-filter
 RestartSec=1
 Restart=on-failure
 
+# Disable the built-in timestamp in log messages.
+Environment=LOGFLAGS=0
 # Optional. Default port is 16925.
 #Environment=PORT=1234
 

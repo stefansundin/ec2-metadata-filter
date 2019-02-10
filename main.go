@@ -44,6 +44,12 @@ func acceptableRequest(r *http.Request) bool {
 }
 
 func main() {
+	if val, ok := os.LookupEnv("LOGFLAGS"); ok {
+		if logflags, err := strconv.Atoi(val); err == nil {
+			log.SetFlags(logflags)
+		}
+	}
+
 	remote, err := url.Parse("http://169.254.169.254")
 	if err != nil {
 		panic(err)
