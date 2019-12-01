@@ -1,6 +1,12 @@
+## Update November 2019
+
+AWS has now released Instance Metadata Service Version 2 (IMDSv2) which basically solves this problem and makes ec2-metadata-filter obsolete. **This is opt-in, so make sure you enable this by setting `HttpTokens` to `required`.** For more information, [see this documentation page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
+
+## ec2-metadata-filter
+
 This is a small program that you can install on EC2 instances in order to enhance the security of the EC2 metadata service.
 
-The metadata service is used to provide temporary security credentials to the IAM role associated with an EC2 instance (among other things). The service does not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
+The metadata service is used to provide temporary security credentials to the IAM role associated with an EC2 instance (among other things). The service ~~does not~~ did not have any security protections built-in, and you can find [numerous](https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/) [examples](http://flaws.cloud/) [online](https://news.ycombinator.com/item?id=12670316) that show how this can be exploited.
 
 Google Compute Engine, on the other hand, [requires a special header](https://cloud.google.com/compute/docs/storing-retrieving-metadata#querying) to be present (`Metadata-Flavor: Google`). This might seems like a small thing, but it is extremely effective. [Here is a good comparison of how the different cloud metadata services behave.](https://ahmet.im/blog/comparison-of-instance-metadata-services/)
 
