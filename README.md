@@ -1,6 +1,6 @@
 ## Update November 2019
 
-AWS has now released Instance Metadata Service Version 2 (IMDSv2) which basically solves this problem and makes ec2-metadata-filter obsolete. **This is opt-in, so make sure you enable this by setting `HttpTokens` to `required`.** For more information, [see this documentation page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html).
+AWS has now released Instance Metadata Service Version 2 (IMDSv2) which basically solves this problem and makes ec2-metadata-filter obsolete. **This is opt-in, so make sure you enable this by setting `HttpTokens` to `required`.** For more information, [see this documentation page](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html). The [SEC310 reInvent session](https://www.youtube.com/watch?v=2B5bhZzayjI) is also helpful.
 
 ## ec2-metadata-filter
 
